@@ -1,0 +1,108 @@
+package com.example.firstapp;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+
+import androidx.appcompat.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+
+    private Button btnStart;
+    private Button btnStartAgain;
+    private Button btnExit;
+    private TextView txtMessage;
+    private TextView reply;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        btnStart = (Button) this.findViewById(R.id.btnStart);
+        btnStartAgain = (Button) this.findViewById(R.id.btnStartAgain);
+        btnExit = (Button) this.findViewById(R.id.btnExit);
+        txtMessage = (TextView) this.findViewById(R.id.txtMessage);
+        reply = (TextView) this.findViewById(R.id.reply);
+
+        btnStart.setOnClickListener(this);
+        btnStartAgain.setOnClickListener(this);
+        btnExit.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                Context context = getApplicationContext();
+                CharSequence message = "It was nice talking to you!";
+                int duration = Toast.LENGTH_LONG;
+                Toast toast = Toast.makeText(context, message, duration);
+                toast.show();
+                finish();
+            }
+        });
+
+        btnStartAgain.setVisibility(View.GONE);
+        btnExit.setVisibility(View.GONE);
+        reply.setVisibility(View.GONE);
+    }
+
+    public void onClick(View v){
+        final EditText input = new EditText(this);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setMessage("Whom would you like to talk about?")
+                .setView(input)
+                .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        keepTalking(input.getText().toString());
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+        startAgain();
+    }
+
+    public void keepTalking(String t){
+        final String l = t;
+        AlertDialog secondDialog = new AlertDialog.Builder(this)
+                .setMessage("Do you like " + t + " ?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        likeTopic(l);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dislikeTopic(l);
+                    }
+                })
+                .show();
+    }
+
+    public void likeTopic(String t){
+        //reply = (TextView) this.findViewById(R.id.reply);
+        String p = "I'm glad that you like " + t + "!! I'm fond of " + t +". I can go on talking about " + t + " life long.";
+        reply.setVisibility(View.VISIBLE);
+        reply.setText(p);
+    }
+    // "I'm glad that you like " + t + "!! I'm fond of " + t +". I can go on talking about " + t + " life long."
+
+    public void dislikeTopic(String t){
+        //reply = (TextView) this.findViewById(R.id.reply);
+        String p = "Yeah, we also don't like " + t + ". Let's not even discuss about " + t + ".";
+        reply.setVisibility(View.VISIBLE);
+        reply.setText(p);
+
+    }
+// "Yeah, we also don't like " + t + ". Let's not even discuss about " + t
+    public void startAgain(){
+        btnStartAgain.setVisibility(View.VISIBLE);
+        txtMessage.setVisibility(View.GONE);
+        btnStart.setVisibility(View.GONE);
+        reply.setVisibility(View.GONE);
+        btnExit.setVisibility(View.VISIBLE);
+    }
+}
